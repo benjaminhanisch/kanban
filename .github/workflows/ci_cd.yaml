@@ -31,7 +31,6 @@ jobs:
           version-type: strict
 
       - name: Get dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: mix deps.get
 
       - run: mix compile --warnings-as-errors
