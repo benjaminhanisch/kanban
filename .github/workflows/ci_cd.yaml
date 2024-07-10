@@ -1,3 +1,5 @@
+# in ci_cd.yaml
+
 name: CI/CD Elixir
 
 on:
@@ -11,9 +13,14 @@ jobs:
     env:
       MIX_ENV: test
     steps:
-      - name: Get dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true' 
-        run: mix deps.get
+      - uses: actions/checkout@v3
+
+      - name: Setup Elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
       - name: Cache deps directory
         uses: actions/cache@v4
         id: cache-deps
@@ -24,13 +31,9 @@ jobs:
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: |
             ${{ runner.os }}-mix-
-            
-      - uses: actions/checkout@v4
 
-      - name: Setup Elixir
-        uses: erlef/setup-beam@v1.17.3
-        with:
-          version-file: .tool-versions
-          version-type: strict
+      - name: Get dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
+        run: mix deps.get
 
       - run: mix compile --warnings-as-errors
