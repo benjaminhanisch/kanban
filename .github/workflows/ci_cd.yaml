@@ -33,7 +33,4 @@ jobs:
           version-file: .tool-versions
           version-type: strict
 
-      - name: Get dependencies
-        run: mix deps.get
-
       - run: mix compile --warnings-as-errors
